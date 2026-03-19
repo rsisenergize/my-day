@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Briefcase, UtensilsCrossed, Landmark, Sparkles, Star, Moon } from 'lucide-react';
 import { nakshatras } from '@/data/nakshatras';
 import { predictions } from '@/data/predictions';
-import { getPredictionIndex, formatDateEN } from '@/lib/predictionEngine';
+import { getPredictionIndex, formatDateEN, formatDateTM } from '@/lib/predictionEngine';
 import StarField from '@/components/StarField';
 import DayQualityBadge from '@/components/DayQualityBadge';
 import Toast from '@/components/Toast';
+import { useLanguage } from '@/components/LanguageProvider';
 
 const features = [
   { key: 'work', icon: Briefcase, labelEn: 'Work & Career', labelTm: 'வேலை & தொழில்' },
@@ -25,6 +26,7 @@ export default function StarPage({ params }: { params: Promise<{ id: string }> }
   const [showToast, setShowToast] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isMounted, setIsMounted] = useState(false);
+  const { language } = useLanguage();
 
   const starId = parseInt(id);
   const star = nakshatras.find(n => n.id === starId);
@@ -44,8 +46,8 @@ export default function StarPage({ params }: { params: Promise<{ id: string }> }
     }
   }, [star]);
 
-  if (!isMounted) return <div className="min-h-dvh bg-[#080b18]"></div>;
-  if (!star) return <div className="min-h-dvh flex items-center justify-center text-[#a8afd4] bg-[#080b18]">Star not found</div>;
+  if (!isMounted) return <div className="min-h-dvh bg-background"></div>;
+  if (!star) return <div className="min-h-dvh flex items-center justify-center text-text-muted bg-background">Star not found</div>;
 
   const predIndex = getPredictionIndex(star.id - 1, selectedDate);
   const pred = predictions.find(p => p.id === predIndex);
@@ -63,22 +65,25 @@ export default function StarPage({ params }: { params: Promise<{ id: string }> }
             <ArrowLeft size={20} className="text-text-secondary" />
           </button>
           <div className="text-center px-12 w-full">
-            <h1 className="text-3xl font-bold font-(--font-heading) text-foreground tracking-wide truncate">{star.nameEn}</h1>
-            <p className="text-base font-(--font-tamil) text-text-secondary tracking-wide truncate mt-0.5">{star.nameTm}</p>
+            {language === 'en' ? (
+              <h1 className="text-3xl font-bold font-heading text-foreground tracking-wide truncate">{star.nameEn}</h1>
+            ) : (
+              <h1 className="text-3xl font-bold font-tamil text-foreground tracking-wide truncate">{star.nameTm}</h1>
+            )}
           </div>
         </div>
 
         {/* Date Pill & Actions */}
         <div className="flex flex-col items-center gap-4 mb-8">
-          <span className="px-5 py-2 rounded-full bg-card border border-border text-sm text-text-secondary font-medium tracking-wide shadow-sm">
-            {formatDateEN(selectedDate)}
+          <span className="px-5 py-2 rounded-full bg-card border border-border text-sm text-text-secondary font-bold tracking-wide shadow-sm">
+            {language === 'en' ? formatDateEN(selectedDate) : formatDateTM(selectedDate)}
           </span>
           <button
             onClick={handleSetBirthStar}
-            className="px-5 py-2 rounded-full border border-secondary text-sm text-secondary hover:bg-secondary/10 transition-colors shadow-sm flex items-center gap-2"
+            className="px-5 py-2 rounded-full border border-secondary text-sm font-bold text-secondary hover:bg-secondary/10 transition-colors shadow-sm flex items-center gap-2"
           >
             <Star size={14} className="fill-secondary" />
-            Set as my birth star
+            {language === 'en' ? 'Set as my birth star' : 'எனது நட்சத்திரமாக அமை'}
           </button>
         </div>
 
@@ -88,12 +93,14 @@ export default function StarPage({ params }: { params: Promise<{ id: string }> }
           {pred && (
             <button
               onClick={() => router.push(`/star/${star.id}/prediction`)}
-              className="card-enter glow-card p-6 flex flex-col items-center text-center gap-2 min-h-[140px] justify-center hover:scale-[1.02] transition-transform"
+              className="card-enter glow-card p-6 flex flex-col items-center text-center gap-2 min-h-[140px] justify-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md"
             >
               <div className="flex flex-col items-center gap-0.5 mb-2">
-                <span className="text-[13px] font-semibold tracking-wide text-foreground">Daily Prediction</span>
-                <span className="text-[8px] text-border tracking-tighter leading-none">|</span>
-                <span className="text-[11px] font-(--font-tamil) tracking-wide text-text-secondary opacity-80">தினசரி பலன்</span>
+                {language === 'en' ? (
+                  <span className="text-sm font-semibold tracking-wide text-foreground">Daily Prediction</span>
+                ) : (
+                  <span className="text-sm font-semibold font-tamil tracking-wide text-foreground">தினசரி பலன்</span>
+                )}
               </div>
               <div className="scale-90 origin-center -mb-2 mt-1">
                 <DayQualityBadge qualityWord={pred.qualityWord} qualityType={pred.qualityType} />
@@ -106,14 +113,17 @@ export default function StarPage({ params }: { params: Promise<{ id: string }> }
               <button
                 key={feature.key}
                 onClick={() => router.push(`/star/${star.id}/${feature.key}`)}
-                className="card-enter glow-card p-6 flex flex-col items-center text-center gap-3 min-h-[140px] justify-center hover:scale-[1.02] transition-transform"
+                className="card-enter glow-card p-6 flex flex-col items-center text-center gap-3 min-h-[140px] justify-center hover:scale-105 active:scale-95 transition-all duration-300 shadow-sm hover:shadow-md"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="w-12 h-12 rounded-full bg-card-hover border border-border flex items-center justify-center mb-1">
                   <Icon size={22} className="text-primary opacity-90" />
                 </div>
-                <p className="text-sm font-semibold tracking-wide text-foreground">{feature.labelEn}</p>
-                <p className="text-xs font-(--font-tamil) tracking-wide text-text-secondary opacity-80">{feature.labelTm}</p>
+                {language === 'en' ? (
+                  <p className="text-sm font-semibold tracking-wide text-foreground">{feature.labelEn}</p>
+                ) : (
+                  <p className="text-sm font-semibold font-tamil tracking-wide text-foreground">{feature.labelTm}</p>
+                )}
               </button>
             );
           })}

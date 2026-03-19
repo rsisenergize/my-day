@@ -30,12 +30,21 @@ const tamilMonths = [
 ];
 
 export function formatDateTM(date: Date): string {
-  // Approximate Tamil date
-  const month = date.getMonth();
-  // Tamil months start roughly mid-April (April 14)
-  // Map: Apr 14 = Chithirai 1
-  const tamilMonthIndex = (month + 9) % 12; // rough mapping
-  const day = date.getDate();
-  const year = date.getFullYear() - 1;
-  return `${tamilMonths[tamilMonthIndex]} ${day}, ${year}`;
+  const gMonth = date.getMonth();
+  const gDate = date.getDate();
+  
+  let tamilMonthIndex;
+  let tamilDate;
+  
+  if (gDate >= 15) {
+    tamilMonthIndex = (gMonth + 9) % 12;
+    tamilDate = gDate - 14;
+  } else {
+    tamilMonthIndex = (gMonth + 8) % 12;
+    const daysInPrevMonth = new Date(date.getFullYear(), gMonth, 0).getDate();
+    // Assuming previous month started around 15th
+    tamilDate = (daysInPrevMonth - 15 + 1) + gDate;
+  }
+  
+  return `${tamilDate} ${tamilMonths[tamilMonthIndex]}`;
 }

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans, Noto_Sans_Tamil } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-heading",
@@ -36,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080b18",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -56,10 +58,13 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
-      <body className="min-h-dvh font-(--font-body)" suppressHydrationWarning>
-        <div className="max-w-[430px] mx-auto min-h-dvh relative">
-          {children}
-        </div>
+      <body className="min-h-dvh flex justify-center bg-slate-100 font-(--font-body)" suppressHydrationWarning>
+        <LanguageProvider>
+          <div className="w-full max-w-md bg-background min-h-dvh shadow-2xl relative border-x border-border/10 overflow-x-hidden">
+            <LanguageToggle />
+            {children}
+          </div>
+        </LanguageProvider>
       </body>
     </html>
   );
