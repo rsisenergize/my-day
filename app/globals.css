@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-card: #0A0A0A;
+  --color-card-hover: #141414;
+  --color-border: #222222;
+  --color-primary: #D4AF37; /* Gold */
+  --color-secondary: #ebd383;
+  --color-good: #4ade80;
+  --color-average: #fbbf24;
+  --color-careful: #f87171;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a3a3a3;
+  --color-text-muted: #525252;
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-tamil: 'Noto Sans Tamil', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #080b18;
+  color: #eef0ff;
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Starfield background */
+.starfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+  opacity: 0;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: var(--max-opacity, 0.8); }
+}
+
+/* Page transitions */
+.page-enter {
+  animation: slideInRight 300ms ease forwards;
+}
+
+.page-exit {
+  animation: slideOutLeft 300ms ease forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-100%); opacity: 0; }
+}
+
+/* Staggered card animations */
+.card-enter {
+  animation: fadeSlideUp 400ms ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeSlideUp {
+  from { 
+    transform: translateY(20px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+/* Row fade animation */
+.row-enter {
+  animation: fadeIn 300ms ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Toast animation */
+.toast-enter {
+  animation: toastSlideUp 300ms ease forwards;
+}
+
+.toast-exit {
+  animation: toastFadeOut 300ms ease forwards;
+}
+
+@keyframes toastSlideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes toastFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Date pill pulse */
+.date-changed {
+  animation: pulse 1.5s ease-in-out 2;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+  50% { box-shadow: 0 0 12px 4px rgba(212, 175, 55, 0.3); }
+}
+
+/* Glow card style */
+.glow-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.glow-card:hover,
+.glow-card:active {
+  background: var(--color-card-hover);
+  border-color: #333333;
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.08);
+}
+
+/* Birth star highlight */
+.birth-star-card {
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, rgba(10, 10, 10, 0) 100%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+/* Safe area support */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Disable text selection on UI elements */
+.select-none {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
